@@ -1,0 +1,45 @@
+name: ""
+
+description: ""
+
+inputs:
+  directory:
+    description: "directory"
+    required: false
+    default: '.'
+  check_outputs_empty:
+    description: "TODO"
+    required: false
+    default: true
+  check_no_trailing_newline:
+    description: "TODO"
+    required: false
+    default: true
+  check_correct_kernel:
+    description: "TODO"
+    required: false
+    default: false
+  check_notebook_badge:
+    description: "TODO"
+    required: false
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Install Dependencies
+      run: pip install -r '${{ github.action_path }}/requirements.txt'
+      shell: bash
+    - name: Run nblint script
+      run: python '${{ github.action_path }}/src/nblint.py'
+      shell: bash
+      env:
+        INPUT_DIRECTORY: ${{ inputs.directory }}
+        INPUT_CHECK_OUTPUTS_EMPTY: ${{ inputs.check_outputs_empty }}
+        INPUT_CHECK_NO_TRAILING_NEWLINE: ${{ inputs.check_no_trailing_newline }}
+        INPUT_CHECK_CORRECT_KERNEL: ${{ inputs.check_correct_kernel }}
+        INPUT_CHECK_NOTEBOOK_BADGE: ${{ inputs.check_notebook_badge }}
