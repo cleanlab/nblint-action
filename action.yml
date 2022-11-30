@@ -8,7 +8,7 @@ inputs:
     required: false
     default: '.'
   ignore_paths:
-    description: Comma seperate list of paths to ignore from checks
+    description: Comma-seperated list of paths to ignore
     required: false
     default: ''
   check_outputs_empty:
@@ -24,7 +24,7 @@ inputs:
     required: false
     default: false
   check_notebook_badge:
-    description: Check that notebooks has a google colab badge 
+    description: Check that notebook has a google colab badge 
     required: false
     default: false
 
