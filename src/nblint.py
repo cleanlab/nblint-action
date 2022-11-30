@@ -84,7 +84,7 @@ def check_notebook_badge(path, contents):
     Checks that notebook has a badge linking to a google colab page.
     """
     first_cell = contents["cells"][1]["source"][0]
-    if not ("<!--<badge>-->" in first_cell):
+    if not ("![Open In Colab]" in first_cell):
         fail(path, "missing colab badge")
 
 
