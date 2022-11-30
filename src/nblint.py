@@ -26,12 +26,18 @@ def main():
 
 def find_notebooks(dir, ignore_paths):
     notebooks = set()
-    for rootname, dirnames, filenames in os.walk(dir, topdown=True):
-        dirnames[:] = [dirname for dirname in dirnames if dirname not in ignore_paths]
+    for dirpath, _, filenames in os.walk(dir):
         for filename in filenames:
+            if any(
+                os.path.relpath(os.path.join(dirpath, filename), dir).startswith(
+                    ignore_path
+                )
+                for ignore_path in ignore_paths
+            ):
+                continue
             if not filename.endswith(".ipynb"):
                 continue
-            full_path = os.path.join(rootname, filename)
+            full_path = os.path.join(dirpath, filename)
             notebooks.add(full_path)
     return notebooks
 
