@@ -7,7 +7,9 @@ import sys
 
 def main():
     dir = os.environ["INPUT_DIRECTORY"]
-    notebooks = find_notebooks(dir)
+    ignore_paths = os.environ["INPUT_IGNORE_PATHS"]
+    ignore_paths = ignore_paths.split(",")
+    notebooks = find_notebooks(dir, ignore_paths)
 
     checks = []
     if os.environ["INPUT_CHECK_OUTPUTS_EMPTY"] == "true":
@@ -22,13 +24,14 @@ def main():
         check(notebook, checks)
 
 
-def find_notebooks(dir):
+def find_notebooks(dir, ignore_paths):
     notebooks = set()
-    for dirname, _, filenames in os.walk(dir):
+    for rootname, dirnames, filenames in os.walk(dir, topdown=True):
+        dirnames[:] = [dirname for dirname in dirnames if dirname not in ignore_paths]
         for filename in filenames:
             if not filename.endswith(".ipynb"):
                 continue
-            full_path = os.path.join(dirname, filename)
+            full_path = os.path.join(rootname, filename)
             notebooks.add(full_path)
     return notebooks
 
@@ -42,6 +45,9 @@ def check(notebook, checks):
 
 
 def check_outputs_empty(path, contents):
+    """
+    Checks that the notebook output cells are empty.
+    """
     for i, cell in enumerate(contents["cells"]):
         if "outputs" in cell and cell["outputs"] != []:
             fail(path, "output is not empty", i)
@@ -62,11 +68,21 @@ def check_no_trailing_newline(path, contents):
 
 
 def check_correct_kernel(path, contents):
+    """
+    Checks that notebooks has a standardized kernel.
+    Especially important for using papermill in the examples repository.
+    """
     if contents["metadata"]["kernelspec"]["display_name"] != "Python 3 (ipykernel)":
-        fail(path, "kernel is incorrect")
+        fail(
+            path,
+            "notebook kernel is incorrect, ensure it is set to 'Python 3 (ipykernel)'",
+        )
 
 
 def check_notebook_badge(path, contents):
+    """
+    Checks that notebook has a badge linking to a google colab page.
+    """
     first_cell = contents["cells"][1]["source"][0]
     if not ("<!--<badge>-->" in first_cell or "{{ badge }}" in first_cell):
         fail(path, "missing colab badge")

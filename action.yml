@@ -1,26 +1,30 @@
-name: ""
+name: nblint
 
-description: ""
+description: Lint jupyter notebooks to ensure proper formatting
 
 inputs:
   directory:
-    description: "directory"
+    description: Directory to search for notebooks
     required: false
     default: '.'
+  ignore_paths:
+    description: Comma seperate list of paths to ignore from checks
+    required: false
+    default: ''
   check_outputs_empty:
-    description: "TODO"
+    description: Check that output cell are empty
     required: false
     default: true
   check_no_trailing_newline:
-    description: "TODO"
+    description: Check that there is no newline at the end of code cells
     required: false
     default: true
   check_correct_kernel:
-    description: "TODO"
+    description: Check that notebook is using the right kernel
     required: false
     default: false
   check_notebook_badge:
-    description: "TODO"
+    description: Check that notebooks has a google colab badge 
     required: false
     default: false
 
@@ -39,6 +43,7 @@ runs:
       shell: bash
       env:
         INPUT_DIRECTORY: ${{ inputs.directory }}
+        INPUT_IGNORE_PATHS: ${{ inputs.ignore_paths }}
         INPUT_CHECK_OUTPUTS_EMPTY: ${{ inputs.check_outputs_empty }}
         INPUT_CHECK_NO_TRAILING_NEWLINE: ${{ inputs.check_no_trailing_newline }}
         INPUT_CHECK_CORRECT_KERNEL: ${{ inputs.check_correct_kernel }}
