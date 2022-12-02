@@ -9,6 +9,8 @@ def main():
     dir = os.environ["INPUT_DIRECTORY"]
     ignore_paths = os.environ["INPUT_IGNORE_PATHS"]
     ignore_paths = ignore_paths.split(",")
+    if "" in ignore_paths:
+        ignore_paths.remove("")
     notebooks = find_notebooks(dir, ignore_paths)
 
     checks = []
